@@ -1,0 +1,28 @@
+{
+  "name": "App-Test-Gen",
+  "description": "This project is a tool to generate test (.t) files for a given module.",
+  "version": "0.0.1",
+  "perl": "6.c",
+  "authors": [
+    "Scott Sotka"
+  ],
+  "auth": "zef:ssotka",
+  "depends": [
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "app-test-gen": "bin/app-test-gen"
+  },
+  "resources": [
+  ],
+  "license": "Artistic-2.0",
+  "tags": [
+    "Test",
+    "Generator",
+    "Development",
+    "Tool"
+  ],
+  "api": "0",
+  "source-url": "git://github.com/ssotka/App-Test-Gen.git"
+}
