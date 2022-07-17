@@ -1,0 +1,69 @@
+#!/usr/bin/env raku
+use v6.d;
+
+=begin pod
+
+=head1 NAME
+   
+app-test-gen - Generate test files boilerplate for a given Raku module.
+
+=head1 SYNOPSIS
+
+app-test-gen [--infile=<module>] [--outfile=<testfile>] [--test-dir=<testdir>]
+
+=head1 DESCRIPTION
+
+This is a tool to generate test (.t) files for a given module. Given a module name (or piping to STDIN), it will find all the subs and/or object methods in the file and output a a test file for the module. The more information found about expected results, the more tests it will attempt to write, but at the very least one test per sub/method will be created.
+
+Although these tests will not necessarily be useful as generated, they can be used as a starting point/boilerplate for more useful tests.
+
+=head1 OPTIONS
+
+=item --man
+
+Prints this message and exits.
+
+=item --help
+
+Shows options for calling app-test-gen
+
+=item --infile
+
+Specifies the source file Raku module. Defaults to STDIN.
+
+=item --outfile
+
+Specifies the name of the output test file. Defaults to STDOUT.
+
+=item --test-dir
+
+Specifies the directory where the test file will be written. Defaults to "./t".
+
+=end pod
+
+multi MAIN( :$infile=$*IN, :$outfile=$*OUT, :$test-dir = "./t" ) {
+    # check for existence of infile
+    if !$infile.IO.e && $infile ne $*IN {
+        die "Could not find file: $infile";
+    }
+    my $module = $infile.IO.slurp;
+    
+    # check for existence of test dir
+    if !$test-dir.IO.dir {
+        $test-dir.IO.mkdir or die "Could not create test dir: $test-dir";
+    }
+    
+    # check outfile, if it is a file, join it with the test dir
+    if $outfile ne $*OUT {
+        $outfile = $test-dir ~ '/' ~ $outfile;
+    }
+    
+    # TODO: Decide the best way to get module subs/methods...Do we scan the code or do we just use the Raku module and introspect it?
+    my @subs = get-sub-signatures( $module );
+    my @classes = get-class-signatures( $module );
+    my %class-methods = get-class-method-signatures( $module, @classes );
+}
+
+multi MAIN( Bool :$man ) {
+    run $*EXECUTABLE, '--doc', $*PROGRAM;
+}
